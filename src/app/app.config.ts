@@ -5,7 +5,12 @@ import { routes } from './app.routes';
 import { provideStore } from '@ngrx/store';
 import { provideEffects } from '@ngrx/effects';
 import { provideStoreDevtools } from '@ngrx/store-devtools';
+import {requestsReducer} from "./state/requests/requests.reducer";
+import {RequestsEffects} from "./state/requests/requests.effects";
 
 export const appConfig: ApplicationConfig = {
-  providers: [provideRouter(routes), provideStore(), provideEffects(), provideStoreDevtools({ maxAge: 25, logOnly: !isDevMode() })]
+  providers: [provideRouter(routes),
+    provideStore({requests:requestsReducer}),
+    provideEffects([RequestsEffects]),
+    provideStoreDevtools({ maxAge: 25, logOnly: !isDevMode() })]
 };
