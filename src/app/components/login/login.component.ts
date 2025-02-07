@@ -1,14 +1,14 @@
 import { Component } from '@angular/core';
-import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
+import {FormBuilder, FormGroup, ReactiveFormsModule, Validators} from '@angular/forms';
 import { AuthService } from '../../core/services/auth.service';
-import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
+import {CommonModule} from "@angular/common";
 
 @Component({
   selector: 'app-login',
-  standalone: true,
-  imports: [ReactiveFormsModule, CommonModule],
-  templateUrl: './login.component.html'
+  standalone:true ,
+  imports:[ReactiveFormsModule , CommonModule],
+  templateUrl: './login.component.html',
 })
 export class LoginComponent {
   loginForm: FormGroup;
@@ -22,21 +22,18 @@ export class LoginComponent {
   ) {
     this.loginForm = this.fb.group({
       email: ['', [Validators.required, Validators.email]],
-      password: ['', Validators.required]
+      password: ['', Validators.required],
     });
   }
-
 
   onSubmit(): void {
     if (this.loginForm.valid) {
       this.isLoading = true;
-      try {
-        if (!this.authService.login(this.loginForm.value.email, this.loginForm.value.password)) {
-          this.errorMessage = 'Invalid crede';
-        }
-      } finally {
-        this.isLoading = false;
+      const { email, password } = this.loginForm.value;
+      if (!this.authService.login(email, password)) {
+        this.errorMessage = 'Invalid credentials';
       }
+      this.isLoading = false;
     } else {
       this.loginForm.markAllAsTouched();
     }
