@@ -1,8 +1,12 @@
+export interface WasteItem {
+  type: string;
+  weight: number;
+}
+
 export interface Request {
   id: number;
   userId: string;
-  type: string;
-  weight: number;
+  wastes: WasteItem[];
   address: string;
   date: string;
   time: string;
