@@ -78,4 +78,9 @@ export class AuthService {
   }
 
 
+  getUserAddress(): string {
+    const user = this.getUserFromLocalStorage();
+    return user?.address || '';
+  }
+
 }

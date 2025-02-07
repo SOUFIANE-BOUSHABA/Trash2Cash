@@ -51,3 +51,27 @@ export const updateRequestSuccess = createAction(
   '[Request] Update Request Success',
   props<{ request: Request }>()
 );
+
+
+
+export const loadCollectorRequests = createAction(
+  '[Request] Load Collector Requests'
+);
+
+export const loadCollectorRequestsSuccess = createAction(
+  '[request Load Request Success',
+  props<{ requests: Request[] }>()
+);
+
+
+
+
+export const updateRequestStatus = createAction(
+  '[Request] Update Request Status',
+  props<{ requestId: number; status: 'Occupied' | 'InProgress' | 'Validated' | 'Rejected' }>()
+);
+
+export const updateRequestStatusSuccess = createAction(
+  '[Request] Update Request Status Success',
+  props<{ requestId: number; status: 'Occupied' | 'InProgress' | 'Validated' | 'Rejected' }>()
+);

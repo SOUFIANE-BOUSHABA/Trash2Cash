@@ -19,7 +19,7 @@ export const selectUserRequests = (userId: string) => createSelector(
 
 
 
-export const selectPendingRequests = (userId: string) => createSelector(
+export const selectPendingRequests = createSelector(
   selectRequestState,
-  (state) => state.requests.filter(req => req.userId === userId && req.status === 'Pending')
+  (state) => state.requests.filter(req => req.status === 'Pending' || req.status === 'Occupied' || req.status === 'InProgress')
 );

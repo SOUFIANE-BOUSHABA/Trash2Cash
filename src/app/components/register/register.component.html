@@ -28,6 +28,12 @@
         <p *ngIf="registerForm.get('password')?.invalid && registerForm.get('password')?.touched" class="text-red-500 text-sm">Password is required</p>
       </div>
 
+      <div>
+        <label for="address" class="block text-sm font-medium text-gray-700">Address</label>
+        <input id="address" type="text" formControlName="address" class="w-full p-2 border rounded-md" placeholder="Your Address" />
+        <p *ngIf="registerForm.get('address')?.invalid && registerForm.get('address')?.touched" class="text-red-500 text-sm">Address is required</p>
+      </div>
+
       <button type="submit" [disabled]="registerForm.invalid" class="w-full py-2 px-4 bg-green-600 text-white rounded-md">Create Account</button>
     </form>
 

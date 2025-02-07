@@ -34,7 +34,39 @@ on(RequestActions.updateRequestSuccess, (state, { request }) => ({
   requests: state.requests.map(req =>
     req.id === request.id ? { ...req, ...request } : req
   ),
-}))
+})),
+
+
+
+
+  on(RequestActions.loadCollectorRequests, (state) => ({
+    ...state,
+  })),
+
+  on(RequestActions.loadCollectorRequestsSuccess, (state, { requests }) => ({
+    ...state,
+    requests,
+  })),
+
+
+
+
+
+
+  on(RequestActions.updateRequestStatus, (state, { requestId, status }) => ({
+    ...state,
+    requests: state.requests.map(req =>
+      req.id === requestId ? { ...req, status } : req
+    ),
+  })),
+
+
+  on(RequestActions.updateRequestStatusSuccess, (state, { requestId, status }) => ({
+    ...state,
+    requests: state.requests.map(req =>
+      req.id === requestId ? { ...req, status } : req
+    ),
+  }))
 
 
 );
