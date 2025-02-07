@@ -1,41 +1,56 @@
-<div class="min-h-screen bg-gradient-to-br from-green-50 to-teal-50 py-12 sm:px-6 lg:px-8 flex items-center justify-center">
-  <div class="max-w-md w-full space-y-8 bg-white p-8 rounded-xl shadow-lg">
-    <h2 class="text-2xl font-extrabold text-gray-900 text-center">Edit Collection Request</h2>
+<form [formGroup]="requestForm" (ngSubmit)="onSubmit()" class="max-w-md mx-auto p-6 bg-white rounded-lg shadow-lg">
+  <h2 class="text-2xl font-bold text-center mb-6">Submit a Collection Request</h2>
 
-    <form [formGroup]="requestForm" (ngSubmit)="onSubmit()" class="space-y-6 mt-6">
 
-      <div>
-        <label for="type" class="block text-sm font-medium text-gray-700">Waste Type</label>
-        <input id="type" formControlName="type"  class="mt-1 w-full p-2 border rounded-md shadow-sm" />
+  <div formArrayName="wastes" class="mb-6">
+    <div *ngFor="let waste of getWasteControls(); let i = index" [formGroupName]="i" class="flex items-center mb-4">
+      <div class="w-full mr-2">
+        <label class="block text-gray-700 font-medium mb-1">Waste Type:</label>
+        <input formControlName="type" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring focus:ring-indigo-200" />
       </div>
-
-      <div>
-        <label for="weight" class="block text-sm font-medium text-gray-700">Weight (kg)</label>
-        <input id="weight" formControlName="weight" type="number"  class="mt-1 w-full p-2 border rounded-md shadow-sm" />
+      <div class="w-full mr-2">
+        <label class="block text-gray-700 font-medium mb-1">Weight (kg):</label>
+        <input formControlName="weight" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring focus:ring-indigo-200" />
       </div>
-
-      <div>
-        <label for="address" class="block text-sm font-medium text-gray-700">Pickup Address</label>
-        <input id="address" formControlName="address" class="mt-1 w-full p-2 border rounded-md shadow-sm" />
-      </div>
-
-      <div>
-        <label for="date" class="block text-sm font-medium text-gray-700">Pickup Date</label>
-        <input id="date" formControlName="date" type="date"  class="mt-1 w-full p-2 border rounded-md shadow-sm" />
-      </div>
-
-      <div>
-        <label for="time" class="block text-sm font-medium text-gray-700">Pickup Time</label>
-        <input id="time" formControlName="time" type="time"  class="mt-1 w-full p-2 border rounded-md shadow-sm" />
-      </div>
-
-      <div>
-        <label for="notes" class="block text-sm font-medium text-gray-700">Additional Notes</label>
-        <textarea id="notes" formControlName="notes"  class="mt-1 w-full p-2 border rounded-md shadow-sm"></textarea>
-      </div>
-
-
-      <button  type="submit"  class="w-full px-4 py-2 bg-blue-600 text-white rounded-lg">update</button>
-    </form>
+      <button type="button" (click)="removeWasteItem(i)" *ngIf="getWasteControls().length > 1" class="text-red-500 hover:text-red-700 focus:outline-none">
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+        </svg>
+      </button>
+    </div>
   </div>
-</div>
+  <button type="button" (click)="addWasteItem()" class="text-green-500 hover:text-green-700 focus:outline-none">
+    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 inline-block mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
+    </svg>
+    Add Waste Item
+  </button>
+
+  <div class="mb-4">
+    <label class="block text-gray-700 font-medium mb-1">Pickup Address:</label>
+    <input formControlName="address" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring focus:ring-indigo-200" />
+  </div>
+
+
+  <div class="mb-4">
+    <label class="block text-gray-700 font-medium mb-1">Pickup Date:</label>
+    <input formControlName="date" type="date" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring focus:ring-indigo-200" />
+  </div>
+
+
+  <div class="mb-4">
+    <label class="block text-gray-700 font-medium mb-1">Pickup Time:</label>
+    <input formControlName="time" type="time" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring focus:ring-indigo-200" />
+  </div>
+
+
+  <div class="mb-6">
+    <label class="block text-gray-700 font-medium mb-1">Additional Notes (Optional):</label>
+    <textarea formControlName="notes" rows="3" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring focus:ring-indigo-200"></textarea>
+  </div>
+
+
+  <button type="submit" class="w-full bg-indigo-600 text-white font-medium py-2 rounded-md hover:bg-indigo-700 focus:outline-none focus:ring focus:ring-indigo-300">
+    Submit Request
+  </button>
+</form>

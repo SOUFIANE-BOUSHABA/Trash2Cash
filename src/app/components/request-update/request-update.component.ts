@@ -1,9 +1,9 @@
-import { Component, OnInit } from '@angular/core';
-import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
+import { Component, OnInit, OnDestroy } from '@angular/core';
+import { FormBuilder, FormGroup, FormArray, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Store } from '@ngrx/store';
 import { Router, ActivatedRoute } from '@angular/router';
 import { RequestService } from '../../core/services/request.service';
-import { Request } from '../../core/models/request.model';
+import { Request, WasteItem } from '../../core/models/request.model';
 import * as RequestActions from '../../state/requests/requests.actions';
 import { CommonModule } from '@angular/common';
 import { AuthService } from '../../core/services/auth.service';
@@ -13,9 +13,9 @@ import { Subscription } from 'rxjs';
   selector: 'app-request-update',
   standalone: true,
   imports: [ReactiveFormsModule, CommonModule],
-  templateUrl: './request-update.component.html',
+  templateUrl: './request-update.component.html'
 })
-export class RequestUpdateComponent implements OnInit {
+export class RequestUpdateComponent implements OnInit, OnDestroy {
   requestForm: FormGroup;
   userId: string;
   requestId?: number;
@@ -30,24 +30,21 @@ export class RequestUpdateComponent implements OnInit {
     private requestService: RequestService,
     private authService: AuthService
   ) {
+    this.userId = this.authService.getUserId();
     this.requestForm = this.fb.group({
-      type: ['', Validators.required],
-      weight: ['', [Validators.required, Validators.min(1)]],
+      wastes: this.fb.array([]),
       address: ['', Validators.required],
       date: ['', Validators.required],
       time: ['', Validators.required],
-      notes: [''],
+      notes: ['']
     });
-
-    this.userId = this.authService.getUserId();
   }
 
   ngOnInit(): void {
     this.routeSub = this.route.params.subscribe((params) => {
       this.requestId = +params['id'];
+      this.getRequestFromLocalStorage();
     });
-
-    this.getRequestFromLocalStorage();
   }
 
   ngOnDestroy(): void {
@@ -58,21 +55,44 @@ export class RequestUpdateComponent implements OnInit {
 
   getRequestFromLocalStorage() {
     const allRequests: Request[] = JSON.parse(localStorage.getItem('requests') || '[]');
-
     this.requestData = allRequests.find((req) => req.userId === this.userId && req.id === this.requestId);
-
     if (this.requestData) {
-      this.requestForm.setValue({
-        type: this.requestData.type,
-        weight: this.requestData.weight,
-        address: this.requestData.address,
-        date: this.requestData.date,
-        time: this.requestData.time,
-        notes: this.requestData.notes || '',
-      });
+      this.initForm();
     } else {
-      console.log('hhhh not found');
+      console.log('Request not found');
       this.router.navigate(['/request-list']);
+    }
+  }
+
+  initForm() {
+    const wasteArray = this.fb.array(
+      this.requestData?.wastes.map(waste => this.createWasteItem(waste)) || []
+    );
+    this.requestForm = this.fb.group({
+      wastes: wasteArray,
+      address: [this.requestData?.address, Validators.required],
+      date: [this.requestData?.date, Validators.required],
+      time: [this.requestData?.time, Validators.required],
+      notes: [this.requestData?.notes || '']
+    });
+  }
+
+  createWasteItem(waste?: WasteItem): FormGroup {
+    return this.fb.group({
+      type: [waste?.type || '', Validators.required],
+      weight: [waste?.weight || '', [Validators.required, Validators.min(1)]]
+    });
+  }
+
+  addWasteItem() {
+    const wastes = this.requestForm.get('wastes') as FormArray;
+    wastes.push(this.createWasteItem());
+  }
+
+  removeWasteItem(index: number) {
+    const wastes = this.requestForm.get('wastes') as FormArray;
+    if (wastes.length > 1) {
+      wastes.removeAt(index);
     }
   }
 
@@ -82,15 +102,21 @@ export class RequestUpdateComponent implements OnInit {
         ...this.requestForm.value,
         id: this.requestId!,
         userId: this.userId,
-        status: 'Pending',
+        status: 'Pending'
       };
-
       this.requestService.updateRequest(updatedRequest).subscribe(() => {
-        this.store.dispatch(RequestActions.addRequestSuccess({ request: updatedRequest }));
+        this.store.dispatch(RequestActions.updateRequestSuccess({ request: updatedRequest }));
         this.router.navigate(['/request-list']);
       });
     } else {
       this.requestForm.markAllAsTouched();
     }
   }
+
+
+  getWasteControls(): FormGroup[] {
+    return (this.requestForm.get('wastes') as FormArray).controls as FormGroup[];
+  }
+
+
 }
