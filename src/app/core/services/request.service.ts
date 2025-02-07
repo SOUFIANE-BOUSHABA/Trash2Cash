@@ -21,7 +21,7 @@ export class RequestService {
     const newRequest: Request = {
       ...request,
       id: requests.length + 1,
-      status: 'Pending' as "Pending" | "Accepted" | "Rejected" | "Completed"
+      status: 'Pending' as 'Pending' | 'Occupied' | 'InProgress' | 'Validated' | 'Rejected'
     };
 
     requests.push(newRequest);
@@ -46,6 +46,24 @@ export class RequestService {
   }
 
 
+
+  getPendingRequests(): Observable<Request[]> {
+    const requests = JSON.parse(localStorage.getItem(this.requestsKey) || '[]');
+    console.log('service' + requests);
+    return of(requests.filter((request: Request) => request.status === 'Pending' || request.status=== 'Occupied' || request.status === 'InProgress'));
+  }
+
+
+
+  updateRequestStatus(requestId: number, status: 'Occupied' | 'InProgress' | 'Validated' | 'Rejected'): Observable<void> {
+    const requests = JSON.parse(localStorage.getItem(this.requestsKey) || '[]');
+    const requestToUpdate = requests.find((req: Request) => req.id === requestId);
+    if (requestToUpdate) {
+      requestToUpdate.status = status;
+      localStorage.setItem(this.requestsKey, JSON.stringify(requests));
+    }
+    return of();
+  }
 
 
 

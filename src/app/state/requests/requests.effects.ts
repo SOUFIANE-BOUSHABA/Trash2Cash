@@ -4,6 +4,7 @@ import { of } from 'rxjs';
 import { catchError, map, mergeMap } from 'rxjs/operators';
 import { RequestService } from '../../core/services/request.service';
 import * as RequestActions from './requests.actions';
+import {loadCollectorRequestsSuccess} from "./requests.actions";
 
 @Injectable()
 export class RequestsEffects {
@@ -70,6 +71,36 @@ export class RequestsEffects {
       )
     )
   );
+
+
+
+
+
+  loadCollectorRequests$ = createEffect(() =>
+    this.actions$.pipe(
+      ofType(RequestActions.loadCollectorRequests),
+      mergeMap(() =>
+        this.requestService.getPendingRequests().pipe(
+          map(requests => RequestActions.loadCollectorRequestsSuccess({ requests }))
+        )
+      )
+    )
+  );
+
+
+
+  updateRequestStatus$ = createEffect(() =>
+    this.actions$.pipe(
+      ofType(RequestActions.updateRequestStatus),
+      mergeMap(({ requestId, status }) =>
+        this.requestService.updateRequestStatus(requestId, status).pipe(
+          map(() => RequestActions.updateRequestStatusSuccess({ requestId, status }))
+        )
+      )
+    )
+  );
+
+
 
 
 }

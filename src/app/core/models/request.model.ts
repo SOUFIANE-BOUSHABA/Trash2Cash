@@ -11,5 +11,5 @@ export interface Request {
   date: string;
   time: string;
   notes?: string;
-  status: 'Pending' | 'Accepted' | 'Rejected' | 'Completed';
+  status: 'Pending' | 'Occupied' | 'InProgress' | 'Validated' | 'Rejected';
 }
