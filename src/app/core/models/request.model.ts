@@ -12,4 +12,5 @@ export interface Request {
   time: string;
   notes?: string;
   status: 'Pending' | 'Occupied' | 'InProgress' | 'Validated' | 'Rejected';
+  isCalculated?: boolean;
 }

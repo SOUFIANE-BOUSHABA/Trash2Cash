@@ -1,8 +1,7 @@
-// src/components/collector-request-list/collector-request-list.component.ts
 import { Component } from '@angular/core';
 import { AsyncPipe, CommonModule, NgForOf, NgIf } from "@angular/common";
 import { Observable } from "rxjs";
-import { Request } from "../../core/models/request.model";
+import { Request, WasteItem } from "../../core/models/request.model";
 import { Store } from "@ngrx/store";
 import { selectPendingRequests } from "../../state/requests/requests.selectors";
 import * as RequestActions from "../../state/requests/requests.actions";
@@ -34,7 +33,15 @@ export class CollectorRequestListComponent {
     this.store.dispatch(RequestActions.loadCollectorRequests());
   }
 
-  updateRequestStatus(requestId: number, status: 'Occupied' | 'InProgress' | 'Validated' | 'Rejected') {
+  updateRequestStatus(userId: string   , requestId: number, status: 'Occupied' | 'InProgress' | 'Validated' | 'Rejected') {
     this.store.dispatch(RequestActions.updateRequestStatus({ requestId, status }));
+    if (status === 'Validated') {
+      this.calculateAndAddPoints(userId);
+    }
+  }
+
+  calculateAndAddPoints(userId :string) {
+    alert(userId)
+      this.authService.updatePointsForValidatedRequests(userId);
   }
 }
