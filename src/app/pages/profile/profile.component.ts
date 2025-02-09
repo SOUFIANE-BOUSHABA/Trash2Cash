@@ -2,18 +2,19 @@ import { Component, OnInit } from '@angular/core';
 import { AuthService } from '../../core/services/auth.service';
 import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
 import { CommonModule } from "@angular/common";
-import { Router } from '@angular/router';
+import {Router, RouterLink} from '@angular/router';
 
 @Component({
   selector: 'app-profile',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule],
+  imports: [CommonModule, ReactiveFormsModule, RouterLink],
   templateUrl: './profile.component.html'
 })
 export class ProfileComponent implements OnInit {
   profileForm: FormGroup;
   isEditing: boolean = false;
   isLoading: boolean = true;
+  userPoints: number = 0;
 
   constructor(
     private authService: AuthService,
@@ -32,6 +33,7 @@ export class ProfileComponent implements OnInit {
       user => {
         if (user) {
           this.profileForm.patchValue(user);
+          this.userPoints = user.points;
         }
         this.isLoading = false;
       },
